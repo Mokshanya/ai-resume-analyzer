@@ -69,7 +69,7 @@ This project helps job seekers improve their resumes by analyzing content and pr
 **Neelapu Mokshanya**
 
 - GitHub: https://github.com/Mokshanya
-- LinkedIn: (add your link here)
+- LinkedIn:-[View My Profile](https://www.linkedin.com/in/neelapu-mokshanya-0559a8259)
 
 ---
 
