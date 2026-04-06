@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI | Analysis Results</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding-top: 2rem; color: #f8fafc; font-family: 'Inter', sans-serif;}
+        .results-section {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        
+        /* ATS Animations */
+        @keyframes scan-laser {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; top: 0; }
+            90% { opacity: 1; top: calc(100% - 5px); }
+            100% { top: calc(100% - 5px); opacity: 0; }
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.9); }
+            100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+        }
+        .scanner-container {
+            position: relative;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            max-height: 480px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        .scanner-laser {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #38bdf8;
+            box-shadow: 0 0 15px 5px rgba(56, 189, 248, 0.6);
+            z-index: 10;
+            animation: scan-laser 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            pointer-events: none;
+        }
+        .scanner-document {
+            padding: 2rem;
+            color: #94a3b8;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        }
+        
+        .anim-slide-up {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .anim-slide-up.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .ats-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .ats-panel::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .status-processing { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .status-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        
+        /* Typing effect cursor */
+        .typing-cursor::after {
+            content: '█';
+            animation: blink 1s step-end infinite;
+        }
+        .typing-target {
+            white-space: pre-wrap;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            color: #f1f5f9;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="margin-bottom: 2rem; text-align: center;">
+        <a href="index.html" style="text-decoration: none; color: #3b82f6; font-weight: bold; font-size: 1.2rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="arrow-left"></i> Back to Analyzer
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Results Section Container -->
+        <div id="resultsSection" class="results-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h3 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 2.5rem;">Analysis Complete!</h3>
+                <button id="liveEditorBtn" style="background: rgba(30, 41, 59, 0.5); border: 1px solid #38bdf8; color: #38bdf8; padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);">
+                    <i data-lucide="zap"></i> Live Editor
+                </button>
+            </div>
+            
+            <div class="transformation-grid" style="display: grid; grid-template-columns: 1fr; align-items: start; gap: 3rem;">
+
+                <!-- Full Width: Animated ATS Screening Engine -->
+                <div class="result-visual-container" style="background: transparent; width: 100%;">
+                    
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h4 style="color: #38bdf8; font-family: monospace; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.8rem; letter-spacing: 2px;">
+                            <i data-lucide="scan-line" class="lucide-spin" style="animation-duration: 3s;"></i> LIVE ATS SCREENING TEST
+                        </h4>
+                        <p style="color: #94a3b8; font-family: monospace; margin-top: 0.5rem;">Simulating Fortune 500 parsing algorithms in real-time...</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                        <!-- Left Side: Scanning Visual -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <span style="font-weight: bold; color: #cbd5e1; font-family: monospace; font-size: 0.9rem;">DOCUMENT_VIEWPORTR</span>
+                                <span class="status-badge status-processing" id="scanStatusBadge"><i data-lucide="loader-2" class="lucide-spin" style="width:14px;"></i> SCANNING</span>
+                            </div>
+                            <div class="scanner-container">
+                                <div class="scanner-laser" id="scannerLaser"></div>
+                                <div id="documentScanView" class="scanner-document">
+                                    Loading document buffer...
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Side: Animated Extractions -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <span style="font-weight: bold; color: #cbd5e1; font-family: monospace; font-size: 0.9rem;">EXTRACTION_CHAIN</span>
+                            </div>
+                            
+                            <!-- Dynamic panels that slide in sequentially -->
+                            <div id="animPanelProfile" class="ats-panel anim-slide-up" style="border-left-color: #38bdf8;">
+                                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; font-family: 'Georgia', 'Times New Roman', serif; font-size: 1.75rem;"><i data-lucide="user"></i> Applicant Profile</div>
+                                <div class="typing-target" id="typeProfile"></div>
+                            </div>
+                            
+                            <div id="animPanelKeywords" class="ats-panel anim-slide-up" style="border-left-color: #a855f7;">
+                                <div style="font-weight: bold; color: #a855f7; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; font-family: 'Georgia', 'Times New Roman', serif; font-size: 1.75rem;"><i data-lucide="fingerprint"></i> Keyword Extraction</div>
+                                <div class="typing-target" id="typeKeywords"></div>
+                            </div>
+                            
+                            <div id="animPanelVerdict" class="ats-panel anim-slide-up" style="border-left-color: #22c55e;">
+                                <div style="font-weight: bold; color: #22c55e; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; font-family: monospace; font-size: 1.75rem;"><i data-lucide="check-circle-2"></i> Preliminary Verdict</div>
+                                <div style="font-size: 3rem; font-weight: 900; line-height: 1; color: #22c55e; text-shadow: 0 0 20px rgba(34,197,94,0.4);" id="verdictScore">--</div>
+                                <div style="color: #4ade80; font-family: 'Georgia', 'Times New Roman', serif; font-size: 0.9rem; margin-top: 0.5rem;" id="verdictText">Calculating...</div>
+                                <div style="color: #94a3b8; font-family: monospace; font-size: 0.8rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); display: none;" id="scoreExplanation"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deep Dive Data Extraction & Line-By-Line Editor -->
+            <div id="deepDiveSection" class="deep-dive-container" style="margin-top: 4rem;">
+                <h3 class="text-center" style="margin-bottom: 2rem; font-family: 'Outfit', sans-serif; font-size: 2rem; text-align: center;">Deep Dive Profile Review</h3>
+
+                <div class="extracted-profile" style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2.5rem;">
+                    <h4 style="color: #93c5fd; margin-bottom: 1rem; margin-top:0;"><i data-lucide="user-check"></i> Extracted Candidate Intel</h4>
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <p><strong>Name Detected:</strong> <span id="extName" style="color: #94a3b8;">Loading...</span></p>
+                        <p><strong>Target Role:</strong> <span id="extRole" style="color: #94a3b8;">Loading...</span></p>
+                        <p><strong>Email:</strong> <span id="extEmail" style="color: #94a3b8;">Loading...</span></p>
+                        <p><strong>Skills:</strong> <span id="extSkills" style="color: #94a3b8;">Loading...</span></p>
+                        <p><strong>Projects:</strong> <span id="extProjects" style="color: #94a3b8;">Loading...</span></p>
+                        <p><strong>Certifications:</strong> <span id="extCertifications" style="color: #94a3b8;">Loading...</span></p>
+                    </div>
+                </div>
+
+                <div class="extracted-profile" style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2.5rem;">
+                    <h4 style="color: #a78bfa; margin-bottom: 1rem; margin-top:0;"><i data-lucide="check-square"></i> Structural Section Checklist</h4>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">Scanning document for required administrative markers...</p>
+                    <div id="sectionChecklist" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 1rem;">Line-by-Line AI Rewrites</h4>
+                <div class="table-responsive" style="overflow-x: auto; background: #0f172a; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <table class="rewrite-tbl" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 1rem; font-weight: 600; width: 15%;">Section</th>
+                                <th style="padding: 1rem; font-weight: 600; width: 42%;">Original Text (Before)</th>
+                                <th style="padding: 1rem; font-weight: 600; width: 43%;">AI Optimized Rewrite (After)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rewriteTableBody">
+                            <!-- Populated by Javascript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <button onclick="window.close()" style="background: none; border: 1px solid #3b82f6; color: #3b82f6; padding: 0.8rem 2rem; border-radius: 0.5rem; cursor: pointer; font-family: inherit; font-weight: bold; font-size: 1rem;">Close Window & Return</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Live Editor Modal -->
+    <div id="editorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: #0f172a; border: 1px solid #38bdf8; border-radius: 1rem; width: 90%; max-width: 800px; padding: 2rem; box-shadow: 0 0 30px rgba(56,189,248,0.2); position: relative;">
+            <button id="closeEditorBtn" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #64748b; cursor: pointer;"><i data-lucide="x"></i></button>
+            <h3 style="color: #38bdf8; font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-top: 0; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="zap"></i> Live Resume Editor</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Tip: Add action verbs like 'Developed' or 'Optimized' to boost your score.</p>
+            
+            <textarea id="liveEditorTextarea" style="width: 100%; height: 350px; background: #020617; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 1rem; color: #f8fafc; font-family: monospace; font-size: 1rem; line-height: 1.5; resize: none; margin-bottom: 1.5rem; box-sizing: border-box;"></textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div id="rescanSpinner" style="display: none; color: #22c55e; font-weight: bold; align-items: center; gap: 0.5rem;"><i data-lucide="loader-2" class="lucide-spin"></i> Re-Scanning...</div>
+                <span id="rescanSpacer" style="flex:1;"></span>
+                <button id="resubmitBtn" style="background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%); border: none; color: #fff; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="refresh-cw"></i> Save & Re-Scan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script to Populate Results -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+                
+                const rawData = localStorage.getItem('analysisData');
+                if (!rawData) {
+                    document.getElementById('resultsSection').innerHTML = '<h3 style="text-align:center; color: #ef4444;">No Analysis Data Found. Please go back and upload a resume.</h3>';
+                    return;
+                }
+                
+                let data;
+                try {
+                    data = JSON.parse(rawData);
+                } catch (jsonErr) {
+                    throw new Error("Failed to parse data from session storage: " + jsonErr.message);
+                }
+                
+                // Set Base Score globally
+                const scoreVal = data.score || 0;
+            
+            // Setup document scanning text
+            if (data.rawTextSnippet) {
+                const docView = document.getElementById('documentScanView');
+                if (docView) {
+                    const rawClean = data.rawTextSnippet.replace(/<[^>]*>?/gm, '');
+                    docView.textContent = rawClean;
+                }
+            }
+            
+            // --- ANIMATION SEQUENCE LOGIC ---
+            // Helper function for typing effect
+            function typeText(elementId, text, speed, callback) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                let i = 0;
+                // Add <br> support for typed strings
+                const isHTML = text.includes('<br>'); 
+                if(isHTML) {
+                    element.innerHTML = text;
+                    element.classList.remove('typing-cursor');
+                    if(callback) callback();
+                    return;
+                }
+                const interval = setInterval(() => {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(interval);
+                        element.classList.remove('typing-cursor');
+                        if (callback) callback();
+                    }
+                }, speed);
+            }
+
+            // Sequence 1: Extract Profile (1 second delay)
+            setTimeout(() => {
+                const p1 = document.getElementById('animPanelProfile');
+                p1.classList.add('show');
+                
+                const name = (data.extractedData && data.extractedData.name) ? data.extractedData.name : "Unknown";
+                const role = (data.extractedData && data.extractedData.role) ? data.extractedData.role : "Unknown Role";
+                setTimeout(() => {
+                    typeText('typeProfile', `Candidate Name: ${name}\nDetected Target Path: ${role}`, 20);
+                }, 600);
+            }, 800);
+            
+            // Sequence 2: Keyword Density (2.5 second delay)
+            setTimeout(() => {
+                const p2 = document.getElementById('animPanelKeywords');
+                p2.classList.add('show');
+                
+                const skills = (data.extractedData && data.extractedData.skills) ? data.extractedData.skills.join(', ') : "None Detected";
+                setTimeout(() => {
+                    typeText('typeKeywords', `Found Skills Matrix:\n[ ${skills} ]\nSystem Load: Successful`, 15);
+                }, 600);
+            }, 2500);
+
+            // Sequence 3: Final Verdict & Score (4 second delay)
+            setTimeout(() => {
+                const p3 = document.getElementById('animPanelVerdict');
+                p3.classList.add('show');
+                
+                // Stop the laser
+                const laser = document.getElementById('scannerLaser');
+                if (laser) {
+                    laser.style.animation = 'none';
+                    laser.style.background = '#22c55e';
+                    laser.style.boxShadow = '0 0 15px 5px rgba(34, 197, 94, 0.6)';
+                    laser.style.opacity = '1';
+                    laser.style.top = '100%';
+                }
+                
+                // Update badge
+                const badge = document.getElementById('scanStatusBadge');
+                if(badge) {
+                    badge.className = 'status-badge status-success';
+                    badge.innerHTML = '<i data-lucide="check" style="width:14px;"></i> SCAN COMPLETE';
+                    lucide.createIcons();
+                }
+                
+                setTimeout(() => {
+                    // Count up animation for score
+                    let curr = 0;
+                    const verdictScore = document.getElementById('verdictScore');
+                    const interval = setInterval(() => {
+                        curr += 3;
+                        if (curr >= scoreVal) {
+                            curr = scoreVal;
+                            clearInterval(interval);
+                            
+                        let color = '#22c55e'; // green
+                        let verdict = 'Passed standard screening parameters.';
+                        if (scoreVal < 50) {
+                            color = '#ef4444'; // red
+                            verdict = 'Failed. Significant formatting friction detected.';
+                            p3.style.borderLeftColor = color;
+                            badge.className = 'status-badge';
+                            badge.style.background = 'rgba(239, 68, 68, 0.1)';
+                            badge.style.color = color;
+                            badge.style.borderColor = color;
+                        } else if (scoreVal < 70) {
+                            color = '#f59e0b'; // yellow
+                            verdict = 'Borderline. Consider optimizations.';
+                            p3.style.borderLeftColor = color;
+                        }
+                        
+                        verdictScore.style.color = color;
+                        verdictScore.style.textShadow = `0 0 20px ${color}80`;
+                        verdictScore.textContent = curr;
+                        document.getElementById('verdictText').textContent = verdict;
+                        document.getElementById('verdictText').style.color = color;
+                        
+                        // Show Score Explanation
+                        const explDiv = document.getElementById('scoreExplanation');
+                        if (explDiv) {
+                            explDiv.style.display = 'block';
+                            if (data.scoreExplanation && Array.isArray(data.scoreExplanation)) {
+                                explDiv.innerHTML = data.scoreExplanation.join('<br>');
+                            } else {
+                                explDiv.innerHTML = 'Score derived via AI metrics scanning core sections, overall density, and syntax structure length.';
+                            }
+                        }
+                        } else {
+                            verdictScore.textContent = curr;
+                        }
+                    }, 30);
+                }, 400);
+                
+            }, 4000);
+                const targetSections = [
+                    { name: 'Contact Info', regex: /Contact|Links|Email|Phone|Phone\\s*Number/i },
+                    { name: 'Professional Summary', regex: /Summary|Objective|Profile/i },
+                    { name: 'Education', regex: /Education|Academic|Academics/i },
+                    { name: 'Experience', regex: /Experience|Work\\s*History|Employment|Internship/i },
+                    { name: 'Skills', regex: /Skills|Technical\\s*Skills|Competencies|Technical\\s*Strengths/i },
+                    { name: 'Personal Skills', regex: /Personal\\s*Skill|Soft\\s*Skill|Interpersonal\\s*Skill/i },
+                    { name: 'Projects', regex: /Project|Projects/i },
+                    { name: 'Certifications', regex: /Certification|Certifications|Certificates|Training/i },
+                    { name: 'Languages', regex: /Language|Languages/i },
+                    { name: 'Achievements', regex: /Achievement|Achievements|Awards|Honors/i },
+                    { name: 'Hobbies', regex: /Hobbies|Interests|Extracurricular/i }
+                ];
+                
+                const checklistContainer = document.getElementById('sectionChecklist');
+                
+                if (checklistContainer) {
+                    checklistContainer.innerHTML = ''; // clear existing
+                    const textSnippet = typeof data.rawTextSnippet === 'string' ? data.rawTextSnippet : JSON.stringify(data);
+                    
+                    let foundCount = 0;
+                    targetSections.forEach(sec => {
+                        const isFound = sec.regex.test(textSnippet);
+                        if (isFound) foundCount++;
+                        
+                        const el = document.createElement('div');
+                        el.style.padding = '0.4rem 0.8rem';
+                        el.style.borderRadius = '0.5rem';
+                        el.style.fontSize = '0.9rem';
+                        el.style.fontWeight = '500';
+                        
+                        if (isFound) {
+                            el.style.color = '#22c55e';
+                            el.style.background = 'rgba(34,197,94,0.1)';
+                            el.style.border = '1px solid rgba(34,197,94,0.2)';
+                            el.innerHTML = `<i data-lucide="check" style="width: 14px; margin-right: 4px; vertical-align: middle;"></i> <span style="vertical-align: middle;">${sec.name}</span>`;
+                        } else {
+                            el.style.color = '#ef4444';
+                            el.style.background = 'rgba(239,68,68,0.1)';
+                            el.style.border = '1px solid rgba(239,68,68,0.2)';
+                            el.innerHTML = `<i data-lucide="x" style="width: 14px; margin-right: 4px; vertical-align: middle;"></i> <span style="vertical-align: middle;">${sec.name}</span>`;
+                        }
+                        checklistContainer.appendChild(el);
+                    });
+                }
+
+            if (data.extractedData) {
+                document.getElementById('extName').textContent = data.extractedData.name || "Not Found";
+                document.getElementById('extRole').textContent = data.extractedData.role || "Not Found";
+                document.getElementById('extEmail').textContent = (data.extractedData.emails && data.extractedData.emails.length > 0) ? data.extractedData.emails[0] : "Not Found";
+                document.getElementById('extSkills').textContent = (data.extractedData.skills && data.extractedData.skills.length > 0) ? data.extractedData.skills.slice(0, 5).join(', ') + (data.extractedData.skills.length > 5 ? '...' : '') : "Not Found";
+                document.getElementById('extProjects').textContent = (data.extractedData.projects && data.extractedData.projects.length > 0) ? data.extractedData.projects.slice(0, 3).join(', ') + (data.extractedData.projects.length > 3 ? '...' : '') : "Not Found";
+                document.getElementById('extCertifications').textContent = (data.extractedData.certifications && data.extractedData.certifications.length > 0) ? data.extractedData.certifications.slice(0, 3).join(', ') + (data.extractedData.certifications.length > 3 ? '...' : '') : "Not Found";
+            }
+            
+            // 3. Line by Line Re-write Table & Split Card Bullets
+            const rewriteBody = document.getElementById('rewriteTableBody');
+            
+            if (rewriteBody && data.detailedFeedback) {
+                data.detailedFeedback.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+                    tr.innerHTML = `
+                        <td style="padding: 1.5rem 1rem; color: #94a3b8; vertical-align: top;">${item.section}</td>
+                        <td style="padding: 1.5rem 1rem; color: #ef4444; background: rgba(239,68,68,0.02); vertical-align: top;">"${item.before}"</td>
+                        <td style="padding: 1.5rem 1rem; color: #22c55e; background: rgba(34,197,94,0.02); vertical-align: top; font-weight: 500;">"${item.after}"</td>
+                    `;
+                    rewriteBody.appendChild(tr);
+                });
+            }
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            
+            // --- LIVE EDITOR LOGIC ---
+            const liveEditorBtn = document.getElementById('liveEditorBtn');
+            const editorModal = document.getElementById('editorModal');
+            const closeEditorBtn = document.getElementById('closeEditorBtn');
+            const liveEditorTextarea = document.getElementById('liveEditorTextarea');
+            const resubmitBtn = document.getElementById('resubmitBtn');
+            const rescanSpinner = document.getElementById('rescanSpinner');
+            
+            if (liveEditorBtn) {
+                // Glow hover effect
+                liveEditorBtn.addEventListener('mouseover', () => { liveEditorBtn.style.boxShadow = '0 0 20px rgba(56, 189, 248, 0.6)'; });
+                liveEditorBtn.addEventListener('mouseout', () => { liveEditorBtn.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.2)'; });
+            
+                liveEditorBtn.addEventListener('click', () => {
+                    editorModal.style.display = 'flex';
+                    const rawClean = data.rawTextSnippet ? data.rawTextSnippet.replace(/<[^>]*>?/gm, '') : '';
+                    liveEditorTextarea.value = rawClean;
+                    if(window.lucide) lucide.createIcons();
+                });
+            }
+            
+            if (closeEditorBtn) {
+                closeEditorBtn.addEventListener('click', () => {
+                    editorModal.style.display = 'none';
+                });
+            }
+            
+            if (resubmitBtn) {
+                resubmitBtn.addEventListener('click', async () => {
+                    const updatedText = liveEditorTextarea.value.trim();
+                    if (!updatedText) return;
+                    
+                    resubmitBtn.style.opacity = '0.5';
+                    resubmitBtn.disabled = true;
+                    rescanSpinner.style.display = 'flex';
+                    
+                    try {
+                        const response = await fetch('/api/rescan', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                text: updatedText,
+                                email: (data.extractedData && data.extractedData.emails && data.extractedData.emails.length > 0) ? data.extractedData.emails[0] : 'anonymous_edit'
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        if (result.error) throw new Error(result.error);
+                        
+                        // Update storage and reload
+                        localStorage.setItem('analysisData', JSON.stringify(result));
+                        window.location.reload();
+                        
+                    } catch (err) {
+                        alert("Failed to rescan: " + err.message);
+                        resubmitBtn.style.opacity = '1';
+                        resubmitBtn.disabled = false;
+                        rescanSpinner.style.display = 'none';
+                    }
+                });
+            }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            
+            } catch (err) {
+                console.error("Critical UI crash:", err);
+                // If anything crashes, dump the error vividly on screen so the user knows exactly why text didn't render
+                const resultsSec = document.getElementById('resultsSection');
+                if (resultsSec) {
+                    resultsSec.innerHTML = `
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 2rem; border-radius: 1rem; color: #fca5a5; max-width: 800px; margin: 0 auto; margin-top: 2rem;">
+                            <h2 style="color: #ef4444; margin-bottom: 1rem;">Frontend Rendering Error</h2>
+                            <p>The ATS parsing visualization crashed. Please ensure your browser supports ES6 Javascript.</p>
+                            <pre style="margin-top: 1rem; padding: 1rem; background: #000; border-radius: 0.5rem; overflow-x: auto; font-family: monospace; font-size: 0.85rem;">${err.message}\\n\\n${err.stack}</pre>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

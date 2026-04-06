@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI | How to Upload</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Shared CSS */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        /* Container */
+        .tutorial-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Steps Layout */
+        .step-block {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .step-image {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Video Container Fake Structure */
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.2);
+        }
+
+        .video-container img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        
+        .play-btn {
+            position: relative;
+            z-index: 10;
+            width: 80px;
+            height: 80px;
+            background: rgba(59, 130, 246, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s;
+        }
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        .play-btn i {
+            color: white;
+            width: 40px;
+            height: 40px;
+            margin-left: 6px;
+        }
+
+        .video-label {
+            position: relative;
+            z-index: 10;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .step-block { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <i data-lucide="file-check-2" class="brand-icon"></i>
+                <span class="gradient-text">ResumeAI</span>
+            </a>
+            <a href="index.html" class="btn btn-primary" style="padding: 0.5rem 1.2rem;">Back to App</a>
+        </div>
+    </nav>
+
+    <div class="tutorial-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>How to <span class="gradient-text">Upload Your Resume</span></h1>
+        </div>
+
+        <!-- Steps -->
+        <div class="step-block">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Prepare your Document</h3>
+                <p>Ensure your resume is saved as either a <strong>.PDF</strong> or a <strong>.DOCX</strong> format. We strictly reject image files (.jpg, .png) to guarantee high-precision text parsing.</p>
+                <img src="assets/upload_resume_ui_1775131310191.png" alt="Format Requirements" class="step-image">
+            </div>
+        </div>
+
+        <div class="step-block">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>Drag & Drop</h3>
+                <p>Scroll down to the 'Upload' section on the main application. You can physically drag your file over the dashed zone, or click the "Browse Files" button to select it from your computer.</p>
+            </div>
+        </div>
+
+        <div class="step-block">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>Interact with the Analyzed View</h3>
+                <p>Instantly after uploading, your text is structurally divided into an interactive split-pane interface. Scroll through your "Initial Draft" on the left and see the heuristically optimized version glowing on the right!</p>
+                <img src="assets/before_after_1775074470425.png" alt="Analyzed View" class="step-image">
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Init Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

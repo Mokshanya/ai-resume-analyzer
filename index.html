@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Resume Analyzer | Boost Your ATS Score</title>
+    <meta name="description"
+        content="Get instant AI resume analysis, keyword optimization, and expert suggestions to boost your resume score and get shortlisted fast.">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="style.css?v=556">
+    <style>
+        /* INJECTED ANIMATIONS TO AVOID CACHING */
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4), 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            50% { box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6), 0 0 20px 5px rgba(6, 182, 212, 0.3); }
+            100% { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4), 0 0 0 0 rgba(139, 92, 246, 0.4); }
+        }
+        
+        .btn-primary {
+            animation: buttonPulse 3s infinite !important;
+        }
+
+        @keyframes float3D {
+            0% { transform: translateY(0px); box-shadow: 0 4px 15px rgba(139,92,246,0.2); }
+            50% { transform: translateY(-12px); box-shadow: 0 20px 25px rgba(6,182,212,0.3); }
+            100% { transform: translateY(0px); box-shadow: 0 4px 15px rgba(139,92,246,0.2); }
+        }
+
+        .floating-mockup {
+            animation: float3D 5s ease-in-out infinite !important;
+            will-change: transform;
+        }
+        .floating-mockup-delay-1 { animation-delay: 1.5s !important; }
+        .floating-mockup-delay-2 { animation-delay: 3s !important; }
+
+        @keyframes shimmerText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="tsparticles" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand">
+                <i data-lucide="file-check-2" class="brand-icon"></i>
+                <span class="gradient-text">ResumeAI</span>
+            </a>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#" id="historyBtn" style="color: var(--accent-blue);"><i data-lucide="history" style="width: 1rem; height: 1rem; display: inline-block; vertical-align: text-bottom;"></i> Past Scans</a>
+            </div>
+            <!-- Google Login / Profile Area -->
+            <div id="auth-container" style="display: flex; align-items: center; justify-content: center; min-width: 150px; min-height: 48px;">
+                <div id="g_id_onload"
+                     data-client_id="958346886655-k57amnd1gv8bskjl87gs1urakvqip3ld.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" id="google_login_btn_wrapper" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+                
+                <div id="user-profile-circle" class="hidden" style="position: relative; cursor: pointer; border-radius: 50%; width: 44px; height: 44px; box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); border: 2px solid var(--accent-blue); padding: 2px;">
+                     <img id="user-profile-img" src="" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                     <div id="user-dropdown" class="hidden" style="position: absolute; top: 55px; right: 0; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; width: 140px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                         <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;" id="user-name-display">Name</div>
+                         <a href="#" class="btn btn-outline" style="font-size: 0.8rem; padding: 4px 8px; width: 100%; text-align: center; margin-bottom: 5px;">My Scans</a>
+                         <a href="#" id="logoutBtn" style="color: #ef4444; text-decoration: none; display: block; text-align: center; font-size: 0.9rem; padding: 5px 0;">Logout</a>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero section">
+        <div class="container hero-grid">
+            <div class="hero-content reveal">
+                <div class="badge">✨ Data-Driven Analysis</div>
+                <h1 class="headline">Boost Your Resume <br>Score with <span class="gradient-text">Precision</span></h1>
+                <p class="subheadline">Get instant ATS analysis, keyword optimization, and expert suggestions to land
+                    your dream job faster.</p>
+                <div class="hero-ctas">
+                    <a href="analyzer-info.html" class="btn btn-primary">Analyze Resume <i data-lucide="arrow-right"></i></a>
+                    <a href="#features" class="btn btn-secondary"><i data-lucide="lightbulb" style="width: 18px; margin-right: 4px; vertical-align: text-bottom;"></i> More Ideas</a>
+                </div>
+            </div>
+            
+            <div class="hero-image-container reveal floating-mockup">
+                <div class="image-wrapper glow-effect" style="border: 2px solid var(--accent-purple); box-shadow: 0 0 40px rgba(139,92,246,0.2);">
+                    <img src="assets/ai_analysis.png" alt="Resume Analyzer Dashboard" style="width: 100%; height: auto; display: block; border-radius: 18px;">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+        <div class="container reveal">
+            <div class="text-center" style="max-width: 850px; margin: 0 auto; margin-bottom: 3.5rem;">
+                <h2 class="section-title">The Smart Way to Get Shortlisted</h2>
+                <p class="section-desc" style="font-size: 1.15rem; line-height: 1.8;">
+                    Over <strong>75% of resumes</strong> are systematically rejected by Applicant Tracking Systems (ATS) before a human ever reads them. 
+                    Smart Resume Analyzer eliminates the guesswork by simulating enterprise screening logic, allowing you to bypass algorithmic friction and land directly in the recruiter's inbox.
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                
+                <!-- Clickable Compact Algorithmic Emulation Card -->
+                <div class="glow-effect" onclick="document.getElementById('algoModal').classList.add('active'); lucide.createIcons();" style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); padding: 2rem; border-radius: 1rem; text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; position: relative;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(56,189,248,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div style="background: rgba(56, 189, 248, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="scan-line" style="color: #38bdf8; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.25rem;">Algorithmic Emulation</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                        We replicate the exact extraction technology used by enterprise ATS platforms (like Workday and Taleo). This guarantees your contact info, skills, and layout never get mangled or dropped during the upload phase.
+                    </p>
+                    <div style="margin-top: 1.5rem; color: #38bdf8; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        Explore Feature <i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+                    </div>
+                </div>
+                
+                <!-- Clickable Contextual Keyword Logic Card -->
+                <div class="glow-effect" onclick="document.getElementById('keywordModal').classList.add('active'); lucide.createIcons();" style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); padding: 2rem; border-radius: 1rem; text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; position: relative;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(139,92,246,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div style="background: rgba(139, 92, 246, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="file-key-2" style="color: #8b5cf6; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.25rem;">Contextual Keyword Logic</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                        Simply listing skills is no longer enough. Our semantic engine cross-references your project descriptions with your target role, ensuring your hard skills have enough keyword density to trigger the "Match" threshold.
+                    </p>
+                    <div style="margin-top: 1.5rem; color: #8b5cf6; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        Explore Feature <i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+                    </div>
+                </div>
+                
+                <!-- Clickable Action-Driven Sentences Card -->
+                <div class="glow-effect" onclick="document.getElementById('actionModal').classList.add('active'); lucide.createIcons();" style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); padding: 2rem; border-radius: 1rem; text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; position: relative;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(16,185,129,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div style="background: rgba(16, 185, 129, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="trending-up" style="color: #10b981; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.25rem;">Action-Driven Sentences</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                        Passive phrasing silently destroys ATS scores. The AI scans each line of experience to identify weak verbs, automatically restructuring them into high-impact, data-driven achievements built for SaaS and tech recruiters.
+                    </p>
+                    <div style="margin-top: 1.5rem; color: #10b981; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        Explore Feature <i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="steps section">
+        <div class="container">
+            <h2 class="section-title text-center reveal">How It Works</h2>
+            <div class="steps-grid">
+                <a href="upload-guide.html" style="text-decoration: none; color: inherit;" class="step-card reveal">
+                    <div class="step-icon"><i data-lucide="upload-cloud"></i></div>
+                    <h3>1. How to Upload Resume</h3>
+                    <p>Click here to view our detailed secure upload pictorial and video guide.</p>
+                </a>
+                <a href="analyzer-info.html" style="text-decoration: none; color: inherit;"
+                    class="step-card reveal reveal-delay-1">
+                    <div class="step-icon"><i data-lucide="brain-circuit"></i></div>
+                    <h3>2. AI Analyzes Content</h3>
+                    <p>Our advanced AI scans for formatting, keywords, and ATS friction. <strong>Click here to view
+                            detailed pictures of our offline AI engine.</strong></p>
+                </a>
+                <a href="score-insights.html" style="text-decoration: none; color: inherit;"
+                    class="step-card reveal reveal-delay-2">
+                    <div class="step-icon"><i data-lucide="bar-chart-big"></i></div>
+                    <h3>3. Get Score & Insights</h3>
+                    <p>Receive a detailed breakdown and actionable tips. <strong>Click here to see examples of our
+                            in-depth feedback!</strong></p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features section bg-darker">
+        <div class="container">
+            <h2 class="section-title text-center reveal">Unlock Your Resume's Potential in AI Analysis</h2>
+            <div class="steps-grid">
+                <div class="feature-card reveal" style="border-top: 3px solid #8b5cf6; padding: 1.5rem;">
+                    <img src="assets/ai_analysis.png" alt="AI Analysis Engine" class="floating-mockup" style="width: 100%; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <i data-lucide="brain-circuit" style="color: #8b5cf6; width: 2.5rem; height: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Authentic AI Parsing</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Our sophisticated AI model scans your resume exactly like a Fortune 500 ATS, strictly enforcing formatting layouts and identifying algorithmic friction points that cause human recruiters to skip you.</p>
+                    <ul style="color: var(--text-secondary); list-style: none; padding: 0; font-size: 0.9rem; text-align: left;">
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #8b5cf6; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Deep structural parsing</li>
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #8b5cf6; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Action verb detection</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card reveal reveal-delay-1" style="border-top: 3px solid #06b6d4; padding: 1.5rem;">
+                    <img src="assets/keyword_mapping.png" alt="Keyword Optimization Map" class="floating-mockup floating-mockup-delay-1" style="width: 100%; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <i data-lucide="search-check" style="color: #06b6d4; width: 2.5rem; height: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Skill Matrix Matching</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Instantly map missing industry skills and context vectors to ensure you hit the threshold metrics for shortlisting. Stop guessing what recruiters want when applying for roles.</p>
+                    <ul style="color: var(--text-secondary); list-style: none; padding: 0; font-size: 0.9rem; text-align: left;">
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #06b6d4; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Intelligent density checks</li>
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #06b6d4; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Contextual alignment map</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card reveal reveal-delay-2" style="border-top: 3px solid #22c55e; padding: 1.5rem;">
+                    <img src="assets/score_dashboard.png" alt="Live Scoring Dashboard" class="floating-mockup floating-mockup-delay-2" style="width: 100%; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <i data-lucide="gauge-circle" style="color: #22c55e; width: 2.5rem; height: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Dynamic Scoring Engine</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Watch your document grade update dynamically using a rigorous 100-point rubric. We break down exactly where you lose points and how to earn them back.</p>
+                    <ul style="color: var(--text-secondary); list-style: none; padding: 0; font-size: 0.9rem; text-align: left;">
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #22c55e; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Granular 100-point scale</li>
+                        <li style="margin-bottom: 0.4rem;"><i data-lucide="check-circle-2" style="color: #22c55e; width: 1rem; height: 1rem; vertical-align: text-bottom; margin-right: 5px;"></i> Live metric calculation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audience -->
+    <section class="audience section">
+        <div class="container text-center reveal">
+            <h2 class="section-title">Built For Everyone</h2>
+            <div class="tags-container">
+                <a href="students.html" style="text-decoration: none;">
+                    <div class="tag">👩‍🎓 Students</div>
+                </a>
+                <a href="freshers.html" style="text-decoration: none;">
+                    <div class="tag">🌱 Freshers</div>
+                </a>
+                <a href="job-seekers.html" style="text-decoration: none;">
+                    <div class="tag">💼 Job Seekers</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing section">
+        <div class="container text-center reveal">
+            <h2 class="section-title">Simple Pricing</h2>
+            <div class="pricing-cards">
+                <div class="price-card">
+                    <h3>Basic Check</h3>
+                    <div class="price">Free</div>
+                    <ul class="features-list">
+                        <li><i data-lucide="check"></i> Format validation</li>
+                        <li><i data-lucide="check"></i> Overall score</li>
+                        <li><i data-lucide="check"></i> Keyword presence</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline">Start Free</a>
+                </div>
+                <div class="price-card highlight glow-effect">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Pro Review</h3>
+                    <div class="price">₹499</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: -15px; margin-bottom: 20px;">1 Month (100 Scans)</div>
+                    <ul class="features-list">
+                        <li><i data-lucide="check"></i> Deep ATS parsing</li>
+                        <li><i data-lucide="check"></i> Line-by-line grammar fix</li>
+                        <li><i data-lucide="check"></i> Missing keywords map</li>
+                        <li><i data-lucide="check"></i> HR expert notes</li>
+                    </ul>
+                    <a href="#" id="getProBtn" class="btn btn-primary">Get Pro</a>
+                </div>
+                <div class="price-card highlight glow-effect" style="border-color: #22c55e; box-shadow: 0 10px 30px rgba(34,197,94,0.1);">
+                    <div class="popular-badge" style="background: #22c55e; color: white;">Best Value</div>
+                    <h3>Lifetime Scans</h3>
+                    <div class="price">₹999</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: -15px; margin-bottom: 20px;">Lifetime (Unlimited)</div>
+                    <ul class="features-list">
+                        <li><i data-lucide="check"></i> All Pro Features Included</li>
+                        <li><i data-lucide="check"></i> Never expires</li>
+                        <li><i data-lucide="check"></i> Unlimited ATS scans</li>
+                        <li><i data-lucide="check"></i> Priority HR support</li>
+                    </ul>
+                    <a href="#" id="getLifetimeBtn" class="btn btn-primary" style="background: #22c55e; border-color: #22c55e;">Get Lifetime</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Capture Form -->
+    <section id="contact" class="contact section">
+        <div class="container form-container reveal">
+            <div class="form-wrapper glow-effect">
+                <h2 class="text-center">Get Your Resume Reviewed</h2>
+                <p class="text-center form-desc">Upload your resume for an exclusive beta evaluation.</p>
+
+                <form id="leadForm" class="lead-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="resume">Resume (Optional)</label>
+                        <div class="file-upload">
+                            <input type="file" id="resume" accept=".pdf,.doc,.docx">
+                            <div class="upload-dummy">
+                                <i data-lucide="file-up"></i>
+                                <span>Click to upload PDF/DOCX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Analyze Resume <i
+                            data-lucide="send"></i></button>
+                    <div id="form-error" class="error-message hidden"
+                        style="color: #ef4444; margin-top: 1rem; text-align: center;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq section bg-darker">
+        <div class="container reveal">
+            <h2 class="section-title text-center">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h4>Is my resume data safe?</h4>
+                    <p>Yes. All uploaded files are analyzed in a secure temporary environment and deleted within 24
+                        hours. We do not sell your personal data.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Does it support strict ATS formats?</h4>
+                    <p>Absolutely. We test your document against the parsing algorithms of major ATS platforms like
+                        Workday, Lever, and Greenhouse.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How fast is the analysis?</h4>
+                    <p>The free scan takes less than 5 seconds. Pro reviews involving detailed feedback may take up to 2
+                        minutes to generate completely.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials & Q&A -->
+    <section class="testimonials section bg-darker">
+        <div class="container">
+            
+            <!-- Live Q&A and Feedback System -->
+            <div id="community-qa-wrapper" class="reveal" style="margin-bottom: 5rem; max-width: 800px; margin-left: auto; margin-right: auto; padding-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left;">
+                <h3 style="color: #f8fafc; font-size: 1.5rem; margin-bottom: 2rem; text-align: center;">Join the Conversation</h3>
+                
+                <!-- Display Area for Live Questions -->
+                <div id="live-questions-feed" style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem; max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                    <!-- Auto populated via JS -->
+                </div>
+
+                <!-- Input Box (Shows if logged in) -->
+                <div id="qa-input-area" class="glow-effect" style="background: var(--surface); border: 1px solid var(--accent-blue); padding: 1.5rem; border-radius: 12px; display: none; gap: 1rem; align-items: flex-start;">
+                    <img id="qa-user-thumb" src="" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue);" alt="User">
+                    <div style="flex: 1;">
+                        <textarea id="qa-textbox" placeholder="Ask a question about the AI scanner, or drop a quick review..." style="width: 100%; min-height: 80px; background: rgba(3,7,18,0.5); border: 1px solid var(--border-color); border-radius: 8px; color: #f8fafc; padding: 1rem; font-family: inherit; font-size: 0.95rem; resize: none; margin-bottom: 1rem; outline: none;"></textarea>
+                        <div style="text-align: right;">
+                            <button id="submitQaBtn" class="btn btn-primary" style="background: var(--accent-blue); padding: 8px 24px;">Post Message</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Prompt (Shows if logged out) -->
+                <div id="qa-login-prompt" onclick="window.requireLogin(event)" style="cursor: pointer; text-align: center; padding: 2rem; background: rgba(30,41,59,0.5); border: 1px dashed var(--border-color); border-radius: 12px; transition: 0.3s;" onmouseover="this.style.background='rgba(56, 189, 248, 0.1)'" onmouseout="this.style.background='rgba(30,41,59,0.5)'">
+                    <p style="color: var(--text-secondary); margin-bottom: 0;"><i data-lucide="lock" style="width:16px; height:16px; vertical-align:text-bottom; margin-right:4px;"></i> Click here to log in using <strong>Google Sign-in</strong> to ask a question.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title text-center reveal">What the Community Says</h2>
+            <div id="dynamic-reviews-grid" class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- Dynamically populated by JS from backend API -->
+            </div>
+            
+            <div class="text-center reveal" style="margin-top: 3rem;">
+                <!-- Restored Leave a Review Feature -->
+                <div style="margin-top: 3rem; text-align: center;">
+                    <button id="openReviewFormBtn" class="btn btn-primary" style="background: var(--surface); border: 1px solid var(--border);"><i data-lucide="message-square-plus" style="vertical-align: text-bottom; margin-right: 5px;"></i> Leave a Formal Review</button>
+                    <p id="review-login-warning" class="hidden" style="color: #ef4444; margin-top: 1rem; font-size: 0.9rem;">You must be signed in via Google to leave a review.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <span class="gradient-text footer-title">ResumeAI</span>
+                <p>Decoding the recruiting algorithm for you.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/andrewyng/" target="_blank" class="glow-effect"
+                    style="color: #60a5fa; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: rgba(96, 165, 250, 0.1);"><i
+                        data-lucide="linkedin"></i> LinkedIn</a>
+                <a href="https://github.com/kamranahmedse" target="_blank" class="glow-effect"
+                    style="color: #38bdf8; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: rgba(56, 189, 248, 0.1);"><i
+                        data-lucide="github"></i> GitHub</a>
+                <a href="mailto:resumeanalyzer94@gmail.com" class="glow-effect"
+                    style="color: #ef4444; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: rgba(239, 68, 68, 0.1);"><i
+                        data-lucide="mail"></i> Gmail</a>
+                <a href="https://wa.me/916309899871" target="_blank" class="glow-effect"
+                    style="color: #22c55e; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: rgba(34, 197, 94, 0.1);"><i
+                        data-lucide="message-circle"></i> WhatsApp</a>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <p>&copy; 2026 Smart Resume Analyzer. All rights reserved. <span id="adminLockBtn" title="Admin Login" style="cursor: pointer; opacity: 0.2; margin-left: 10px;"><i data-lucide="lock" style="width: 14px; height: 14px; vertical-align: middle;"></i></span></p>
+        </div>
+    </footer>
+
+    <!-- Floating CTA -->
+    <a href="#contact" class="floating-cta glow-effect"><i data-lucide="rocket"></i></a>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: var(--card-bg); border: 1px solid var(--accent-purple); border-radius: 1rem; width: 90%; max-width: 500px; padding: 2rem; position: relative; box-shadow: 0 10px 40px rgba(139,92,246,0.3); backdrop-filter: blur(16px);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0; font-size: 1.5rem;"><i data-lucide="archive" style="color: var(--accent-purple); vertical-align: middle; margin-right: 8px;"></i> Resume Vault</h2>
+                <button id="closeHistoryBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; transition: 0.3s;"><i data-lucide="x"></i></button>
+            </div>
+            <div id="historyList" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;">
+                <!-- Automatically populated by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal (Desktop View) -->
+    <div id="paymentModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: var(--card-bg); border: 1px solid var(--accent-purple); border-radius: 1rem; width: 90%; max-width: 400px; padding: 2rem; position: relative; text-align: center; box-shadow: 0 10px 40px rgba(139,92,246,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: white;">Get Pro Access</h2>
+                <button id="closePaymentBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Scan this QR code with any UPI app (GPay, PhonePe, Paytm) to pay <b>₹499</b>.</p>
+            
+            <div style="background: white; padding: 1rem; border-radius: 8px; display: inline-block; margin-bottom: 1rem;">
+                <img id="qrCodeImage" src="" alt="UPI QR Code" style="width: 200px; height: 200px; display: block;">
+            </div>
+            
+            <p id="displayUpiId" style="font-weight: bold; margin-bottom: 1.5rem; font-family: monospace; font-size: 1.2rem; color: #a78bfa;">your-upi-id@ybl</p>
+            
+            <a href="https://wa.me/916309899871?text=Hi!%20I%20just%20paid%20%E2%82%B9499%20for%20the%20Pro%20Review.%20Here%20is%20my%20screenshot:" target="_blank" class="btn btn-primary w-100" style="background: #22c55e;"><i data-lucide="message-circle" style="vertical-align: middle; margin-right: 5px;"></i> I've Paid! Send Screenshot</a>
+        </div>
+    </div>
+
+    <!-- User Review Modal -->
+    <div id="userReviewModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: var(--card-bg); border: 1px solid var(--accent-blue); border-radius: 1rem; width: 90%; max-width: 500px; padding: 2rem; position: relative; box-shadow: 0 10px 40px rgba(6,182,212,0.3); backdrop-filter: blur(16px);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem;">Submit Review</h2>
+                <button id="closeUserReviewBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; transition: 0.3s;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="reviewSubmitForm">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Name</label>
+                    <input type="text" id="reviewName" required style="width: 100%; padding: 0.5rem; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); color: white;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Role & Location (e.g. Designer • London)</label>
+                    <input type="text" id="reviewRole" required style="width: 100%; padding: 0.5rem; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); color: white;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Rating (1-5)</label>
+                    <input type="number" id="reviewRating" min="1" max="5" value="5" required style="width: 100%; padding: 0.5rem; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); color: white;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Review</label>
+                    <textarea id="reviewQuote" rows="3" required style="width: 100%; padding: 0.5rem; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); color: white;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Submit for Approval</button>
+                <div id="reviewStatus" style="margin-top: 10px; text-align: center; color: #38bdf8;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Logic Modals Container -->
+    <div id="adminReviewAuthModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: var(--card-bg); border: 1px solid #ef4444; border-radius: 1rem; width: 90%; max-width: 400px; padding: 2rem; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: #ef4444;"><i data-lucide="shield-alert" style="vertical-align: middle; margin-right: 8px;"></i> Admin Auth</h2>
+                <button id="closeAdminAuthBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <input type="password" id="adminPassword" placeholder="Enter PIN" style="width: 100%; padding: 0.5rem; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); color: white; margin-bottom: 1rem; text-align: center; font-size: 1.5rem; letter-spacing: 5px;">
+            <button id="loginAdminBtn" class="btn btn-primary w-100" style="background: #ef4444;">Login</button>
+        </div>
+    </div>
+    
+    <div id="adminReviewPanelModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+        <div style="background: var(--card-bg); border: 1px solid #ef4444; border-radius: 1rem; width: 90%; max-width: 600px; padding: 2rem; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: #ef4444;">Pending Approvals</h2>
+                <button id="closeAdminPanelBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div id="pendingReviewsList" style="max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Required Modal -->
+    <div id="authRequiredModal" class="custom-modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="custom-modal-content" style="max-width: 400px; text-align: center; padding: 2.5rem 1.5rem;">
+            <button class="custom-modal-close" onclick="document.getElementById('authRequiredModal').classList.remove('active')">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div style="background: rgba(239, 68, 68, 0.1); display: inline-block; padding: 16px; border-radius: 50%; margin-bottom: 1.5rem;">
+                <i data-lucide="lock" style="color: #ef4444; width: 2.5rem; height: 2.5rem; display: block;"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.5rem;">Authentication Required</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                You must securely sign in using your Google Account before you can access this feature.
+            </p>
+            <button onclick="document.getElementById('authRequiredModal').classList.remove('active'); window.scrollTo({top: 0, behavior: 'smooth'});" class="btn btn-primary w-100" style="background: #38bdf8; border-color: #38bdf8;">
+                <i data-lucide="log-in" style="vertical-align: middle; margin-right: 5px;"></i> Take me to Sign In
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js?v=2026_new"></script>
+    <script>
+        lucide.createIcons();
+        
+        // --- GOOGLE LOGIN LOGIC ---
+        const userProfileCircle = document.getElementById('user-profile-circle');
+        const googleLoginWrapper = document.getElementById('google_login_btn_wrapper');
+        const userImg = document.getElementById('user-profile-img');
+        const userNameDisplay = document.getElementById('user-name-display');
+        const userDropdown = document.getElementById('user-dropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Check if user is already logged in (local storage)
+        const savedUser = localStorage.getItem('smart_resume_user');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            showProfileCircle(user.picture, user.name);
+        }
+
+        userProfileCircle.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('smart_resume_user');
+            userProfileCircle.classList.add('hidden');
+            googleLoginWrapper.style.display = 'block';
+            userDropdown.classList.add('hidden');
+            
+            const qaInput = document.getElementById('qa-input-area');
+            if(qaInput) qaInput.style.display = 'none';
+            const qaPrompt = document.getElementById('qa-login-prompt');
+            if(qaPrompt) qaPrompt.style.display = 'block';
+        });
+
+        function showProfileCircle(pictureUrl, name) {
+            googleLoginWrapper.style.display = 'none';
+            userImg.src = pictureUrl;
+            userNameDisplay.innerText = name;
+            userProfileCircle.classList.remove('hidden');
+            
+            const qaInput = document.getElementById('qa-input-area');
+            if(qaInput) {
+                qaInput.style.display = 'flex';
+                document.getElementById('qa-user-thumb').src = pictureUrl;
+            }
+            const qaPrompt = document.getElementById('qa-login-prompt');
+            if(qaPrompt) qaPrompt.style.display = 'none';
+        }
+
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            
+            // Send token to backend securely
+            fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Login successful!", data.user);
+                    // Save to local storage
+                    localStorage.setItem('smart_resume_user', JSON.stringify(data.user));
+                    // Update UI to circle
+                    showProfileCircle(data.user.picture, data.user.name);
+                } else {
+                    console.error("Login failed on backend", data.error);
+                }
+            })
+            .catch(err => {
+                console.error("Error connecting to backend for auth", err);
+            });
+        }
+    </script>
+    <!-- tsParticles Background -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script>
+        tsParticles.load("tsparticles", {
+            background: { color: { value: "transparent" } },
+            fpsLimit: 60,
+            interactivity: {
+                detectsOn: "window",
+                events: {
+                    onHover: { enable: true, mode: "grab" },
+                    resize: true
+                },
+                modes: { grab: { distance: 180, links: { opacity: 0.5 } } }
+            },
+            particles: {
+                color: { value: ["#8b5cf6", "#06b6d4"] },
+                links: {
+                    color: "random",
+                    distance: 150,
+                    enable: true,
+                    opacity: 0.3,
+                    width: 1.5
+                },
+                move: {
+                    direction: "none",
+                    enable: true,
+                    outModes: { default: "bounce" },
+                    random: true,
+                    speed: 1,
+                    straight: false
+                },
+                number: { density: { enable: true, area: 800 }, value: 60 },
+                opacity: { value: 0.6 },
+                shape: { type: "circle" },
+                size: { value: { min: 1, max: 2.5 } }
+            },
+            detectRetina: true
+        });
+    </script>
+    <!-- Modal Styles -->
+    <style>
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .custom-modal-content {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 1), rgba(15, 23, 42, 1));
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: scale(1) translateY(0);
+        }
+        .custom-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #f8fafc;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .custom-modal-close:hover {
+            background: rgba(239, 68, 68, 0.8);
+        }
+        .custom-modal-content::-webkit-scrollbar { width: 8px; }
+        .custom-modal-content::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    </style>
+
+    <!-- Algorithmic Emulation Modal -->
+    <div id="algoModal" class="custom-modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="custom-modal-content">
+            <button class="custom-modal-close" onclick="document.getElementById('algoModal').classList.remove('active')">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1 1 400px; padding: 3rem;">
+                    <div style="background: rgba(56, 189, 248, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="scan-line" style="color: #38bdf8; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.75rem;">100% Algorithmic Emulation</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1rem;">
+                        Human recruiters don't throw away your resume—an ATS algorithm does. Before a human ever previews your file, enterprise software must successfully extract your exact career history.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1.5rem;">
+                        We rigorously replicate the extraction logic used by standard systems like Workday, Taleo, and Greenhouse. Our Python backend tests your document's structural integrity so your layout doesn't crash the parser.
+                    </p>
+                    <ul style="color: #cbd5e1; list-style: none; padding: 0; line-height: 1.8; margin-bottom: 0;">
+                        <li><i data-lucide="check" style="color: #38bdf8; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Validates legacy and modern PDF formats</li>
+                        <li><i data-lucide="check" style="color: #38bdf8; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Tests multi-column layout stripping</li>
+                        <li><i data-lucide="check" style="color: #38bdf8; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Identifies hidden tables causing algorithmic failure</li>
+                    </ul>
+                </div>
+                <div style="flex: 1 1 400px; position: relative; min-height: 350px;">
+                    <img src="assets/emu_ats.png" alt="ATS Heuristic Algorithm Simulation" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; border-bottom-right-radius: 1rem;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(30, 41, 59, 1) -5%, transparent 40%); pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Contextual Keyword Logic Modal -->
+    <div id="keywordModal" class="custom-modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="custom-modal-content">
+            <button class="custom-modal-close" onclick="document.getElementById('keywordModal').classList.remove('active')">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1 1 400px; padding: 3rem;">
+                    <div style="background: rgba(139, 92, 246, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="file-key-2" style="color: #8b5cf6; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.75rem;">Semantic Keyword Logic</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1rem;">
+                        Modern tracking systems don't just "Ctrl+F" your resume for keywords. They evaluate the <strong>contextual density</strong> of those skills within your actual project descriptions.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1.5rem;">
+                        We dynamically calculate your keyword match-rate based on the targeted tech role. If you claim to be a "React Developer" but only mention "React" once in a standalone skills list, the ATS algorithm automatically flags your application as a low-relevance match.
+                    </p>
+                    <ul style="color: #cbd5e1; list-style: none; padding: 0; line-height: 1.8; margin-bottom: 0;">
+                        <li><i data-lucide="check" style="color: #8b5cf6; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Generates targeted SaaS and Enterprise keyword maps</li>
+                        <li><i data-lucide="check" style="color: #8b5cf6; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Analyzes syntactic proximity in bullet points</li>
+                        <li><i data-lucide="check" style="color: #8b5cf6; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Prevents "keyword stuffing" penalties</li>
+                    </ul>
+                </div>
+                <div style="flex: 1 1 400px; position: relative; min-height: 350px;">
+                    <img src="assets/context_keywords.png" alt="Semantic Keyword Analysis" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; border-bottom-right-radius: 1rem;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(30, 41, 59, 1) -5%, transparent 40%); pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Action-Driven Sentences Modal -->
+    <div id="actionModal" class="custom-modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="custom-modal-content">
+            <button class="custom-modal-close" onclick="document.getElementById('actionModal').classList.remove('active')">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1 1 400px; padding: 3rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); display: inline-block; padding: 12px; border-radius: 12px; margin-bottom: 1rem;">
+                        <i data-lucide="trending-up" style="color: #10b981; width: 1.75rem; height: 1.75rem; display: block;"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: #f8fafc; font-size: 1.75rem;">Action-Driven Replacements</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1rem;">
+                        A strong ATS profile doesn't just list responsibilities—it proves continuous impact. Using passive verbs like "Handled" or "Responsible for" signals a lack of leadership and sinks your profile scoring tier.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 1rem; margin-bottom: 1.5rem;">
+                        Our deep-learning model actively highlights every weak verb in your resume and automatically generates high-impact, metric-driven rewrites specifically curated to capture the attention of technical and SaaS recruiters instantly.
+                    </p>
+                    <ul style="color: #cbd5e1; list-style: none; padding: 0; line-height: 1.8; margin-bottom: 0;">
+                        <li><i data-lucide="check" style="color: #10b981; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Flags over 500 passive verbs & filler words</li>
+                        <li><i data-lucide="check" style="color: #10b981; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Suggests active, metric-focused replacements</li>
+                        <li><i data-lucide="check" style="color: #10b981; width: 1.2rem; margin-right: 8px; vertical-align: middle;"></i> Aligns tone with top Fortune 500 performers</li>
+                    </ul>
+                </div>
+                <div style="flex: 1 1 400px; position: relative; min-height: 350px;">
+                    <img src="assets/action_sentences.png" alt="Action Verb Replacements" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; border-bottom-right-radius: 1rem;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(30, 41, 59, 1) -5%, transparent 40%); pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

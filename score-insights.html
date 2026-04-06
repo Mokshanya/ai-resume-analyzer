@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI | Score & Insights</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Shared CSS Overrides from Main Template */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --secondary: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Nav */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .brand-icon {
+            color: var(--primary);
+        }
+
+        /* Container */
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .header-block {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header-block h1 {
+            font-size: 3rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .header-block p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Feature Blocks */
+        .feature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .feature-block.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .feature-block.reverse .content-box {
+            order: 2;
+        }
+
+        .feature-block.reverse .image-box {
+            order: 1;
+        }
+
+        .content-box h2 {
+            font-size: 2rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+        
+        .content-box p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-list i {
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Images */
+        .image-box {
+            position: relative;
+        }
+
+        .image-box img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .image-box img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px var(--primary-glow);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-glow);
+            filter: blur(100px);
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 20px -10px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px var(--primary-glow);
+        }
+
+        @media (max-width: 768px) {
+            .feature-block, .feature-block.reverse {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .feature-block.reverse .content-box { order: 1; }
+            .feature-block.reverse .image-box { order: 2; }
+            .header-block h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <i data-lucide="file-check-2" class="brand-icon"></i>
+                <span class="gradient-text">ResumeAI</span>
+            </a>
+            <a href="index.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Return to App</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header-block">
+            <h1>Comprehensive <span class="gradient-text">Scoring & Insights</span></h1>
+            <p>Don't just see a number. Understand exactly what makes up your resume's strength and receive line-by-line feedback.</p>
+        </div>
+
+        <!-- Block 1: Real-time Scoring Metric -->
+        <div class="feature-block">
+            <div class="content-box">
+                <h2>Deep ATS Score Breakdown</h2>
+                <p>Our intelligent system provides a holistic score out of 100, broken down into quantitative categories so you know where you stand against the competition.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="target"></i>
+                        <div>
+                            <strong>Impact Scoring</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Evaluates your use of numbers, hard metrics, and outcome-oriented statements over generic duties.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i data-lucide="shield-alert"></i>
+                        <div>
+                            <strong>Formatting Friction</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Identifies multi-column errors and complex layouts that confuse standard Applicant Tracking Systems.</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-box">
+                <div class="glow-orb"></div>
+                <img src="assets/score_insights_matrix_1775131375292.png" alt="Deep Score Matrix UI">
+            </div>
+        </div>
+
+        <!-- Block 2: Interactive Feedback -->
+        <div class="feature-block reverse">
+            <div class="content-box">
+                <h2>Tailored Actionable Feedback</h2>
+                <p>We don't just tell you that your resume lacks impact. We pinpoint the exact sentences and offer professionally rewritten alternatives directly below the score.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="file-edit"></i>
+                        <div>
+                            <strong>Line-By-Line Tweaks</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Red flags highlight weak verbs and replace them with strong industry-matched keywords.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i data-lucide="trending-up"></i>
+                        <div>
+                            <strong>Industry Specificity</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Whether you're in tech, healthcare, or government, insights automatically align with your career track.</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-box">
+                <div class="glow-orb" style="background: rgba(139, 92, 246, 0.4);"></div>
+                <img src="assets/demo_ui_1775074421763.png" alt="Feedback Console">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Init Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI | LinkedIn</title>
+    <!-- Common Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --ln-blue: #0a66c2;
+            --ln-bg: #f3f2ef;
+            --ln-card: #ffffff;
+            --ln-text: #000000;
+            --ln-muted: #666666;
+            --ln-border: #e0dfdc;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Fira Sans', Ubuntu, Oxygen, 'Oxygen Sans', Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--ln-bg);
+            color: var(--ln-text);
+        }
+
+        /* Navbar Mock */
+        .ln-navbar {
+            background: var(--ln-card);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .ln-logo {
+            color: var(--ln-blue);
+            width: 34px;
+            height: 34px;
+            margin-right: 8px;
+        }
+
+        .ln-search {
+            background: #eef3f8;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 8px 8px 40px;
+            width: 240px;
+            font-size: 14px;
+            color: var(--ln-text);
+            position: relative;
+        }
+
+        /* Mock specific icons for search */
+        .search-icon {
+            position: absolute;
+            left: 60px;
+            top: 18px;
+            color: var(--ln-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .main-container {
+            max-width: 1128px;
+            margin: 24px auto;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+            padding: 0 24px;
+        }
+
+        /* Card Setup */
+        .ln-card {
+            background: var(--ln-card);
+            border-radius: 8px;
+            border: 1px solid var(--ln-border);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            height: 200px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            position: relative;
+        }
+
+        .hero-overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            opacity: 0.1;
+        }
+
+        /* Profile Block */
+        .profile-block {
+            padding: 24px;
+            position: relative;
+        }
+
+        .profile-logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
+            border: 4px solid var(--ln-card);
+            position: absolute;
+            top: -70px;
+            left: 24px;
+            border-radius: 8px; /* Company style */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        div.profile-logo > svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary {
+            background-color: var(--ln-blue);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background-color: #004182; }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--ln-muted);
+            border: 1px solid var(--ln-muted);
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--ln-text);
+        }
+
+        .profile-headline {
+            font-size: 16px;
+            color: var(--ln-text);
+            margin: 0 0 12px 0;
+        }
+
+        .profile-meta {
+            color: var(--ln-muted);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .profile-followers {
+            font-weight: 600;
+            color: var(--ln-text);
+        }
+
+        /* Section Block */
+        .section-header {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 24px 24px 0 24px;
+            margin: 0;
+        }
+
+        .section-content {
+            padding: 16px 24px 24px 24px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--ln-text);
+        }
+
+        /* Sidebar */
+        .sidebar-card {
+            padding: 16px;
+        }
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .sidebar-icon {
+            width: 32px;
+            height: 32px;
+            background: #eef3f8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ln-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fake Navbar -->
+    <nav class="ln-navbar">
+        <i data-lucide="linkedin" class="ln-logo" style="fill: var(--ln-blue);"></i>
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" class="ln-search" placeholder="Search" readonly>
+    </nav>
+
+    <div class="main-container">
+        <!-- Main Content -->
+        <div class="column-main">
+            <!-- Hero Card -->
+            <div class="ln-card">
+                <div class="hero-banner">
+                    <span class="hero-overlay-text">RESUME AI</span>
+                </div>
+                <div class="profile-block">
+                    <div class="profile-logo">
+                        <i data-lucide="file-check-2"></i>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button id="followBtn" class="btn-primary" onclick="toggleFollow()">+ Follow</button>
+                        <a href="index.html" style="text-decoration: none;"><button class="btn-secondary">Visit website <i data-lucide="external-link" style="width: 14px; height: 14px; vertical-align: text-bottom;"></i></button></a>
+                        <button class="btn-secondary" onclick="alert('This is a simulated mock profile!')">More</button>
+                    </div>
+
+                    <h1 class="profile-name">ResumeAI</h1>
+                    <p class="profile-headline">Decoding the recruiting algorithm for you.</p>
+                    <p class="profile-meta">Internet Publishing · San Francisco, California · <span class="profile-followers">150,492 followers</span></p>
+                    <p class="profile-meta" style="font-size: 12px;">See all 12 employees on LinkedIn</p>
+                </div>
+            </div>
+
+            <!-- About Card -->
+            <div class="ln-card">
+                <h2 class="section-header">About</h2>
+                <div class="section-content">
+                    ResumeAI is an offline-first, high-performance heuristic document scanner built to outsmart modern Applicant Tracking Systems (ATS). 
+                    <br><br>
+                    Designed for software engineering and medical professionals, our proprietary local engine provides instant line-by-line grammatical transformations—replacing weak syntax with industry-leading "Power Verbs." No APIs. No data harvesting. Just instant, beautiful document optimization.
+                    <br><br>
+                    <strong>Specialties</strong><br>
+                    Technical Recruiting, Document Formatting, Heuristic Analysis, Artificial Intelligence, and Career Growth.
+                </div>
+            </div>
+            
+            <!-- Posts Mock -->
+            <div class="ln-card">
+                <h2 class="section-header" style="padding-bottom: 12px; border-bottom: 1px solid var(--ln-border);">Recent Updates</h2>
+                <div class="section-content" style="padding-top: 16px;">
+                    <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 12px;">
+                        <div class="profile-logo" style="position: static; width: 48px; height: 48px; min-width: 48px;">
+                            <i data-lucide="file-check-2" style="width: 24px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">ResumeAI <span style="color: var(--ln-muted); font-weight: 400; font-size: 12px;">• 1w</span></div>
+                            <div style="font-size: 12px; color: var(--ln-muted);">150,492 followers</div>
+                        </div>
+                    </div>
+                    <p>We just passed 10,000 resumes rigorously optimized locally! Proud to empower candidates globally. 🚀 #ResumeAI #TechCareers #ATS</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column-right">
+            <!-- Details Card -->
+            <div class="ln-card sidebar-card">
+                <h3 class="sidebar-title">About this company</h3>
+                
+                <div class="sidebar-item">
+                    <div class="sidebar-icon"><i data-lucide="link" style="width: 16px;"></i></div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 12px;">Website</div>
+                        <a href="index.html" style="color: var(--ln-blue); text-decoration: none; font-size: 12px; font-weight: 600;">View Application</a>
+                    </div>
+                </div>
+                
+                <div class="sidebar-item">
+                    <div class="sidebar-icon"><i data-lucide="briefcase" style="width: 16px;"></i></div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 12px;">Industry</div>
+                        <div style="color: var(--ln-muted); font-size: 12px;">Internet Publishing</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-item">
+                    <div class="sidebar-icon"><i data-lucide="users" style="width: 16px;"></i></div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 12px;">Company size</div>
+                        <div style="color: var(--ln-muted); font-size: 12px;">2-10 employees</div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-item">
+                    <div class="sidebar-icon"><i data-lucide="map-pin" style="width: 16px;"></i></div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 12px;">Headquarters</div>
+                        <div style="color: var(--ln-muted); font-size: 12px;">San Francisco, California</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        function toggleFollow() {
+            const btn = document.getElementById('followBtn');
+            if (btn.innerText === '+ Follow') {
+                btn.innerText = 'Following';
+                btn.style.backgroundColor = 'var(--ln-muted)'; 
+            } else {
+                btn.innerText = '+ Follow';
+                btn.style.backgroundColor = 'var(--ln-blue)';
+            }
+        }
+    </script>
+</body>
+</html>

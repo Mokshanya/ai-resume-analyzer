@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arjunmehta / Smart-Resume-Analyzer · GitHub</title>
+    <!-- Common Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --gh-bg: #0d1117;
+            --gh-header: #010409;
+            --gh-border: #30363d;
+            --gh-text: #c9d1d9;
+            --gh-muted: #8b949e;
+            --gh-link: #58a6ff;
+            --gh-green: #238636;
+            --gh-card: #0d1117;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            margin: 0;
+            padding: 0;
+            background-color: var(--gh-bg);
+            color: var(--gh-text);
+        }
+
+        /* Navbar Mock */
+        .gh-navbar {
+            background: var(--gh-header);
+            height: 62px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            border-bottom: 1px solid var(--gh-border);
+        }
+
+        .gh-logo {
+            color: white;
+            width: 32px;
+            height: 32px;
+            margin-right: 16px;
+        }
+
+        .gh-search {
+            background: var(--gh-bg);
+            border: 1px solid var(--gh-border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            width: 260px;
+            color: var(--gh-muted);
+            font-size: 14px;
+        }
+
+        /* Repo Header */
+        .repo-header {
+            background: var(--gh-bg);
+            padding: 16px 32px 0 32px;
+            border-bottom: 1px solid var(--gh-border);
+        }
+
+        .repo-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .repo-name {
+            font-size: 20px;
+            color: var(--gh-link);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .repo-name span {
+            color: var(--gh-text);
+        }
+
+        .repo-badge {
+            border: 1px solid var(--gh-border);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 12px;
+            color: var(--gh-text);
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .repo-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gh-btn {
+            background: #21262d;
+            border: 1px solid var(--gh-border);
+            color: var(--gh-text);
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .gh-btn-group { display: flex; }
+        .gh-btn-group .gh-btn:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
+        .gh-btn-group .gh-btn:last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+        /* Tabs */
+        .repo-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--gh-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            font-weight: 600;
+            border-bottom-color: #f78166;
+        }
+        
+        .tab.active i { color: var(--gh-text); }
+        .tab i { color: var(--gh-muted); }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1280px;
+            margin: 24px auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+        }
+
+        /* File Browser Mock */
+        .file-browser {
+            border: 1px solid var(--gh-border);
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--gh-card);
+            margin-bottom: 24px;
+        }
+        
+        .file-header {
+            background: #161b22;
+            padding: 12px 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gh-border);
+        }
+
+        .commit-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gh-muted);
+        }
+        .commit-message { color: var(--gh-text); }
+
+        .file-row {
+            padding: 8px 16px;
+            display: grid;
+            grid-template-columns: 24px 1fr 2fr 1fr;
+            align-items: center;
+            font-size: 14px;
+            border-bottom: 1px solid var(--gh-border);
+        }
+        .file-row:last-child { border-bottom: none; }
+        .file-row:hover { background: #161b22; }
+        .file-row i { color: var(--gh-muted); width: 16px; }
+        .file-row i.blue { color: #54aeff; }
+        .file-name { color: var(--gh-text); text-decoration: none; }
+        .file-msg { color: var(--gh-muted); }
+        .file-time { color: var(--gh-muted); text-align: right; }
+
+        /* Readme */
+        .readme-box {
+            border: 1px solid var(--gh-border);
+            border-radius: 6px;
+            background: var(--gh-card);
+        }
+
+        .readme-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gh-border);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .readme-content {
+            padding: 32px;
+            line-height: 1.6;
+        }
+
+        .readme-content h1 { border-bottom: 1px solid var(--gh-border); padding-bottom: 8px; margin-top: 0; }
+        .readme-content h2 { border-bottom: 1px solid var(--gh-border); padding-bottom: 8px; margin-top: 24px; }
+        .readme-content pre { background: #161b22; padding: 16px; border-radius: 6px; overflow-x: auto; font-family: 'Space Mono', monospace; font-size: 14px; color: #e6edf3;}
+        .readme-content code { background: rgba(110,118,129,0.4); padding: 2px 6px; border-radius: 6px; font-family: 'Space Mono', monospace; font-size: 13px; }
+        .readme-content ul { padding-left: 20px; }
+        .readme-content p, .readme-content li { color: var(--gh-text); }
+
+        /* Right Column */
+        .sidebar-section {
+            border-bottom: 1px solid var(--gh-border);
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+        .sidebar-section:last-child { border-bottom: none; }
+        
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-desc {
+            font-size: 14px;
+            color: var(--gh-text);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .sidebar-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gh-muted);
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-decoration: none;
+        }
+        .sidebar-meta:hover { color: var(--gh-link); }
+
+        .tag {
+            background: rgba(56, 139, 253, 0.1);
+            color: var(--gh-link);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 0 4px 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fake Navbar -->
+    <nav class="gh-navbar">
+        <i data-lucide="github" class="gh-logo"></i>
+        <div class="gh-search">Search or jump to...</div>
+    </nav>
+
+    <!-- Repo Header -->
+    <div class="repo-header">
+        <div class="repo-title-row">
+            <div class="repo-name">
+                <i data-lucide="book-marked" style="color: var(--gh-muted);"></i>
+                <a href="#" style="color: var(--gh-link); text-decoration: none;">arjunmehta</a> <span>/</span> <a href="#" style="color: var(--gh-link); text-decoration: none; font-weight: 600;">Smart-Resume-Analyzer</a>
+                <span class="repo-badge">Public</span>
+            </div>
+            
+            <div class="repo-actions">
+                <div class="gh-btn-group">
+                    <button class="gh-btn"><i data-lucide="eye" style="width: 14px;"></i> Watch</button>
+                    <button class="gh-btn">84</button>
+                </div>
+                <div class="gh-btn-group">
+                    <button class="gh-btn"><i data-lucide="git-fork" style="width: 14px;"></i> Fork</button>
+                    <button class="gh-btn">415</button>
+                </div>
+                <div class="gh-btn-group">
+                    <button class="gh-btn"><i data-lucide="star" style="width: 14px;"></i> Star</button>
+                    <button class="gh-btn">2,492</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="repo-tabs">
+            <a href="#" class="tab active"><i data-lucide="code" style="width: 16px;"></i> Code</a>
+            <a href="#" class="tab"><i data-lucide="circle-dot" style="width: 16px;"></i> Issues <span style="background: rgba(110,118,129,0.4); padding: 2px 6px; border-radius: 10px; font-size: 12px; margin-left: 4px;">4</span></a>
+            <a href="#" class="tab"><i data-lucide="git-pull-request" style="width: 16px;"></i> Pull requests</a>
+            <a href="#" class="tab"><i data-lucide="play-circle" style="width: 16px;"></i> Actions</a>
+            <a href="#" class="tab"><i data-lucide="layout" style="width: 16px;"></i> Projects</a>
+            <a href="#" class="tab"><i data-lucide="book" style="width: 16px;"></i> Wiki</a>
+            <a href="#" class="tab"><i data-lucide="shield" style="width: 16px;"></i> Security</a>
+            <a href="#" class="tab"><i data-lucide="bar-chart-2" style="width: 16px;"></i> Insights</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Main Content -->
+        <div class="column-main">
+            <!-- File Browser -->
+            <div class="file-browser">
+                <div class="file-header">
+                    <div class="commit-info">
+                        <img src="https://ui-avatars.com/api/?name=Arjun+Mehta&background=0D8ABC&color=fff&rounded=true&size=24" alt="avatar" width="24" height="24">
+                        <span style="color: var(--gh-text); font-weight: 600;">arjunmehta</span>
+                        <a href="#" class="commit-message" style="text-decoration: none;">Merge pull request #145 from refactor/heuristics</a>
+                    </div>
+                    <div style="color: var(--gh-muted); font-family: 'Space Mono', monospace;">52a7b9c <span>•</span> 3 hours ago</div>
+                </div>
+                
+                <div class="file-row">
+                    <i data-lucide="folder" class="blue"></i>
+                    <a href="#" class="file-name">static</a>
+                    <span class="file-msg">Updated UI animations and scroll bugs</span>
+                    <span class="file-time">3 hours ago</span>
+                </div>
+                <div class="file-row">
+                    <i data-lucide="folder" class="blue"></i>
+                    <a href="#" class="file-name">templates</a>
+                    <span class="file-msg">Added dynamic CSS injection support</span>
+                    <span class="file-time">2 days ago</span>
+                </div>
+                <div class="file-row">
+                    <i data-lucide="file-text"></i>
+                    <a href="#" class="file-name">.gitignore</a>
+                    <span class="file-msg">Initial commit framework</span>
+                    <span class="file-time">last month</span>
+                </div>
+                <div class="file-row">
+                    <i data-lucide="file-text"></i>
+                    <a href="#" class="file-name">app.py</a>
+                    <span class="file-msg">Added python-docx native parsing support</span>
+                    <span class="file-time">5 hours ago</span>
+                </div>
+                <div class="file-row">
+                    <i data-lucide="file-text"></i>
+                    <a href="#" class="file-name">requirements.txt</a>
+                    <span class="file-msg">Pin Flask and PyPDF2 versions</span>
+                    <span class="file-time">last week</span>
+                </div>
+                <div class="file-row">
+                    <i data-lucide="message-square"></i>
+                    <a href="#" class="file-name">README.md</a>
+                    <span class="file-msg">Detailed documentation update</span>
+                    <span class="file-time">10 minutes ago</span>
+                </div>
+            </div>
+
+            <!-- Readme Box -->
+            <div class="readme-box">
+                <div class="readme-header">
+                    <i data-lucide="list" style="width: 16px;"></i> README.md
+                </div>
+                <div class="readme-content">
+                    <h1>🚀 Smart Resume Analyzer</h1>
+                    <p>An offline-first, heuristically-driven ATS Resume Analyzer capable of instant document transformation for Corporate and Medical profiles.</p>
+                    
+                    <p><a href="index.html" style="background: var(--gh-green); color: white; text-decoration: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; display: inline-block; margin-top: 8px;">View Live Application</a></p>
+
+                    <h2>✨ Features</h2>
+                    <ul>
+                        <li><strong>Zero-API Local Processing:</strong> Powered entirely by a custom Python regex heuristic engine, requiring zero network calls or paid API keys.</li>
+                        <li><strong>Modern Format Support:</strong> Seamlessly parses both legacy <code>.pdf</code> and modern <code>.docx</code> files utilizing <code>PyPDF2</code> and <code>python-docx</code>.</li>
+                        <li><strong>Interactive Document Previews:</strong> Features an immersive, dynamic CSS-driven UI that physically injects optimized rewrites straight into virtual representations of the user's uploaded document.</li>
+                        <li><strong>Intelligent Highlighting:</strong> Automatically hunts down weak phrases and violently replaces them with highlighted, industry-standard Action Verbs.</li>
+                    </ul>
+
+                    <h2>💻 Installation</h2>
+                    <pre><code># Clone the project repository
+git clone https://github.com/arjunmehta/Smart-Resume-Analyzer.git
+
+# Install requirements
+pip install -r requirements.txt
+
+# Boot the offline server
+python app.py</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column-right">
+            <!-- About -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">About</h3>
+                <p class="sidebar-desc">An offline-first ATS Resume Analyzer that instantly formats documents with local API heuristics.</p>
+                
+                <a href="index.html" class="sidebar-meta"><i data-lucide="link" style="width: 16px;"></i> resumeai.demo.local</a>
+                
+                <div style="margin-top: 16px;">
+                    <span class="tag">python</span>
+                    <span class="tag">flask</span>
+                    <span class="tag">regex-parser</span>
+                    <span class="tag">document-analysis</span>
+                    <span class="tag">resume-builder</span>
+                </div>
+                
+                <div class="sidebar-meta" style="margin-top: 16px;">
+                    <i data-lucide="book-open" style="width: 16px;"></i> Readme
+                </div>
+                <div class="sidebar-meta">
+                    <i data-lucide="scale" style="width: 16px;"></i> MIT license
+                </div>
+            </div>
+
+            <!-- Releases -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title" style="display: flex; justify-content: space-between; align-items: center;">Releases <span style="background: rgba(110,118,129,0.4); padding: 2px 6px; border-radius: 10px; font-size: 12px; font-weight: normal;">3</span></h3>
+                <div style="display: flex; gap: 8px; align-items: start;">
+                    <i data-lucide="tag" style="color: #238636; width: 16px; margin-top: 2px;"></i>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; color: var(--gh-link);">v2.1.0 Offline Engine</div>
+                        <div style="font-size: 12px; color: var(--gh-muted); margin-top: 4px;">Latest</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contributors -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title" style="display: flex; justify-content: space-between; align-items: center;">Contributors <span style="background: rgba(110,118,129,0.4); padding: 2px 6px; border-radius: 10px; font-size: 12px; font-weight: normal;">1</span></h3>
+                <img src="https://ui-avatars.com/api/?name=Arjun+Mehta&background=0D8ABC&color=fff&rounded=true&size=32" alt="avatar" width="32" height="32" style="cursor: pointer;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

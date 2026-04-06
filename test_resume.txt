@@ -1,0 +1,24 @@
+John Doe
+Software Engineer
+john.doe@email.com | 123-456-7890
+
+Summary
+Experienced software engineer with 5 years in full-stack development.
+
+Skills
+Python, JavaScript, React, SQL, HTML, CSS
+
+Experience
+Senior Developer at Tech Corp (2020-Present)
+- Led team of 5 in developing new web application
+- Improved database efficiency by 40%
+
+Education
+B.S. Computer Science, State University (2016-2020)
+
+Projects
+- E-commerce Platform: Built using React and Node.js
+- Resume Analyzer: Created an ATS parser using Python
+
+Certifications
+- AWS Certified Cloud Practitioner

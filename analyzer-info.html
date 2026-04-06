@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeAI | Engine Technology</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Shared CSS Overrides from Main Template */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --secondary: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Nav */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .brand-icon {
+            color: var(--primary);
+        }
+
+        /* Container */
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .header-block {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header-block h1 {
+            font-size: 3rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .header-block p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Feature Blocks */
+        .feature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .feature-block.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .feature-block.reverse .content-box {
+            order: 2;
+        }
+
+        .feature-block.reverse .image-box {
+            order: 1;
+        }
+
+        .content-box h2 {
+            font-size: 2rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+        
+        .content-box p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-list i {
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Images */
+        .image-box {
+            position: relative;
+        }
+
+        .image-box img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .image-box img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px var(--primary-glow);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-glow);
+            filter: blur(100px);
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Call To Action */
+        .bottom-cta {
+            text-align: center;
+            background: var(--bg-card);
+            padding: 4rem 2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-top: 4rem;
+        }
+        
+        .bottom-cta h2 {
+            font-size: 2rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 20px -10px var(--primary-glow);
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px var(--primary-glow);
+        }
+
+        @media (max-width: 768px) {
+            .feature-block, .feature-block.reverse {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .feature-block.reverse .content-box { order: 1; }
+            .feature-block.reverse .image-box { order: 2; }
+            .header-block h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <i data-lucide="file-check-2" class="brand-icon"></i>
+                <span class="gradient-text">ResumeAI</span>
+            </a>
+            <a href="index.html" class="btn btn-primary" style="margin-top: 0; padding: 0.5rem 1rem; font-size: 0.9rem;">Return to App</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header-block">
+            <h1>Inside the <span class="gradient-text">Heuristic Engine</span></h1>
+            <p>Discover the purely offline, incredibly precise regex algorithm powering our Applicant Tracking System simulator.</p>
+        </div>
+
+        <!-- Block 1: Offline Processing -->
+        <div class="feature-block">
+            <div class="content-box">
+                <h2>100% Offline, Zero-API Architecture</h2>
+                <p>Unlike standard AI platforms that harvest your personal data by sending your document to external servers, our proprietary python engine processes everything strictly locally on your machine.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="shield-check"></i>
+                        <div>
+                            <strong>Absolute Privacy Guard</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Your PDF or Word Document never leaves your computer. No LLMs, no data harvesting strings, zero external network requests.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i data-lucide="zap"></i>
+                        <div>
+                            <strong>Instantaneous Parsing</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Utilizing native PyPDF2 and python-docx, documents are mathematically shredded into indexable strings in less than 0.2 seconds.</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-box">
+                <div class="glow-orb"></div>
+                <img src="assets/hero_score_1775074405418.png" alt="Score Engine Core">
+            </div>
+        </div>
+
+        <!-- Block 2: Grammatical Heuristics -->
+        <div class="feature-block reverse">
+            <div class="content-box">
+                <h2>Dynamic "Power Verb" Formatting</h2>
+                <p>Our algorithm classifies your profile vector (Corporate vs. Medical) instantly. It explicitly targets passive voice, weak descriptive verbs, and densely structured bullet points.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="scan-line"></i>
+                        <div>
+                            <strong>Visual Flow Isolation</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">We use advanced regular expressions to programmatically identify formatting blocks, headers, and bullet matrices to prevent visual collision.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i data-lucide="edit-3"></i>
+                        <div>
+                            <strong>Aggressive Re-Writing</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Sentences like 'Helped manage the team' are algorithmically rewritten into industry-standard phrases like 'Spearheaded operational matrices'.</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-box">
+                <div class="glow-orb" style="background: rgba(139, 92, 246, 0.4);"></div>
+                <img src="assets/ai_analyze_engine_1775131341748.png" alt="Data Flow Interface">
+            </div>
+        </div>
+
+        <!-- Block 3: The Split Screen UI -->
+        <div class="feature-block">
+            <div class="content-box">
+                <h2>Interactive Transformation Engine</h2>
+                <p>Reading feedback is boring. Our interface seamlessly restructures your unoptimized document inside a live, scrollable CSS Sandbox.</p>
+                <ul class="feature-list">
+                    <li>
+                        <i data-lucide="eye"></i>
+                        <div>
+                            <strong>Visual DOM Injection</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">We mathematically inject HTML spans directly into the raw strings, illuminating your name and headings in glowing neon without destroying your natural layout.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i data-lucide="arrow-right-left"></i>
+                        <div>
+                            <strong>Real-Time Before & After</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Experience the impact. A red 'Initial Draft' actively competes with a vastly superior green 'Final Version' block right on your screen.</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-box">
+                <div class="glow-orb" style="background: rgba(34, 197, 94, 0.4);"></div>
+                <img src="assets/before_after_1775074470425.png" alt="Transformation Engine">
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Init Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
